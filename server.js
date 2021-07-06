@@ -1,3 +1,7 @@
+// if (process.env.NODE_ENV != 'production') {
+//   require('dotenv').config()
+// }
+require("dotenv").config();
 
 const express = require('express');
 const path = require("path");
@@ -15,10 +19,10 @@ const session = require('express-session');
 const users = require('./models.js');
 const flash = require('connect-flash');
 
-if (app.get("env") === "production") {
-  // Serve secure cookies, requires HTTPS
-  session.cookie.secure = true;
-}
+// if (app.get("env") === "production") {
+//   // Serve secure cookies, requires HTTPS
+//   session.cookie.secure = true;
+// }
 // const initializePassport = require('./passport-config')
 // initializePassport(passport,email => {
 //   return users.find(user => user.email === email)
@@ -46,7 +50,7 @@ app.use(express.urlencoded({
 }));
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  cookie: {},
+  /*cookie: {},*/
   maxAge: 3600000,
   resave: false,
   saveUninitialize: false
