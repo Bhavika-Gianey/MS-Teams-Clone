@@ -49,7 +49,7 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(session({
-  secret: secret,
+  secret: 'secret',
   /*cookie: {},*/
   maxAge: 3600000,
   resave: false,
