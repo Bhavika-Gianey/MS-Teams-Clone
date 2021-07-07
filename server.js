@@ -1,7 +1,7 @@
 // if (process.env.NODE_ENV != 'production') {
 //   require('dotenv').config()
 // }
-require("dotenv").config();
+// require("dotenv").config();
 
 const express = require('express');
 const path = require("path");
@@ -49,7 +49,7 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: secret,
   /*cookie: {},*/
   maxAge: 3600000,
   resave: false,
