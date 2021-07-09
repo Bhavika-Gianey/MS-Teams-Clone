@@ -1,67 +1,76 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Login</title>
-    <link rel="stylesheet" href="/css/login.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="container">
-	<div class="screen">
-		<div class="screen__content">
-			<form action="/login" class="login" method="POST">
-        <% if (success_message!= ''){%>
-        <div class="alert alert-dismissible alert-success">
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          <strong><%= success_message %></strong>
-        </div>
-        <% } %>
-        <% if(error != ''){%>
-        <div class="alert alert-dismissible alert-danger">
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-          <strong><%= error %></strong>
-        </div>
-        <%}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Login</title>
+  <link rel="icon" href="/images/microsoft-terms-and-office (3).png" type="image/png">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/login.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="screen">
+      <div class="screen__content">
+        <form action="/login" class="login" method="POST">
+          <% if (success_message!= ''){%>
+          <div class="alert alert-dismissible alert-success">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong><%= success_message %></strong>
+          </div>
+          <% } %>
+          <% if(error != ''){%>
+          <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <strong><%= error %></strong>
+          </div>
+          <%}
       %>
 
-        <div class="login__field">
-          <label for="email"><i class="login__icon fas fa-lock"></i></label>
-					<input type="email" class="login__input" placeholder="E-Mail" id="email" name="email" required>
-				</div>
-				<div class="login__field">
-          <label for="password"><i class="login__icon fas fa-lock"></i></label>
-					<input type="password" class="login__input" placeholder="Password" id="password" name="password" required>
-				</div>
-				<button type="submit" class="button login__submit">
-					<span class="button__text">Login</span>
-					<i class="button__icon fas fa-chevron-right"></i>
-				</button>
-        <div class="signup-link">
-           Not a member? <a href="/register">Sign-Up</a>
+          <div class="login__field">
+            <label for="email"><i class="login__icon fas fa-lock"></i></label>
+            <input type="email" class="login__input" placeholder="E-Mail" id="email" name="email" required>
+          </div>
+          <div class="login__field">
+            <label for="password"><i class="login__icon fas fa-lock"></i></label>
+            <input type="password" class="login__input" placeholder="Password" id="password" name="password" required>
+          </div>
+          <button type="submit" class="button login__submit">
+            <span class="button__text">Login</span>
+            <i class="button__icon fas fa-chevron-right"></i>
+          </button>
+          <div class="signup-link">
+            Not a member? <a href="/register">Sign-Up</a>
+          </div>
+        </form>
+        <div class="social-login">
+          <!-- <h3>log in via</h3> -->
+          <div class="social-icons">
+            <a href="#" class="social-login__icon fab fa-instagram"></a>
+            <a href="#" class="social-login__icon fab fa-facebook"></a>
+            <a href="#" class="social-login__icon fab fa-twitter"></a>
+          </div>
         </div>
-			</form>
-			<div class="social-login">
-				<!-- <h3>log in via</h3> -->
-				<div class="social-icons">
-					<a href="#" class="social-login__icon fab fa-instagram"></a>
-					<a href="#" class="social-login__icon fab fa-facebook"></a>
-					<a href="#" class="social-login__icon fab fa-twitter"></a>
-				</div>
-			</div>
-		</div>
-		<div class="screen__background">
-			<span class="screen__background__shape screen__background__shape4"></span>
-			<span class="screen__background__shape screen__background__shape3"></span>
-			<span class="screen__background__shape screen__background__shape2"></span>
-			<span class="screen__background__shape screen__background__shape1"></span>
-		</div>
-	</div>
-</div>
+      </div>
+      <div class="screen__background">
+        <span class="screen__background__shape screen__background__shape4"></span>
+        <span class="screen__background__shape screen__background__shape3"></span>
+        <span class="screen__background__shape screen__background__shape2"></span>
+        <span class="screen__background__shape screen__background__shape1"></span>
+      </div>
+    </div>
+  </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
-  </body>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
+</body>
+
 </html>

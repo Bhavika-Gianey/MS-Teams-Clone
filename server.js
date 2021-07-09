@@ -1,34 +1,20 @@
-// if (process.env.NODE_ENV != 'production') {
-//   require('dotenv').config()
-// }
-// require("dotenv").config();
-
 const express = require('express');
 const path = require("path");
 const app = express();
-const server = require('http').Server(app);
+const server = require('http').Server(app); //establishing server
 const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const {
   v4: uuidV4
-} = require('uuid');
+} = require('uuid'); //generates unique id for each room
 const passport = require('passport');
 const session = require('express-session');
 const users = require('./models.js');
 const flash = require('connect-flash');
 
-// if (app.get("env") === "production") {
-//   // Serve secure cookies, requires HTTPS
-//   session.cookie.secure = true;
-// }
-// const initializePassport = require('./passport-config')
-// initializePassport(passport,email => {
-//   return users.find(user => user.email === email)
-// })
-
-//Import peerjs
+//Importing peerjs(webrtc framework for peer to peer connection)
 const {
   ExpressPeerServer
 } = require('peer');
@@ -48,18 +34,19 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
+//defining session secrets
 app.use(session({
   secret: 'secret',
-  /*cookie: {},*/
   maxAge: 3600000,
   resave: false,
   saveUninitialize: false
 }))
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize()) //initialiazing passportjs
+app.use(passport.session()) //initializing passport sessions
 
 //connect Flash
 app.use(flash());
+
 //setting global variables
 app.use((req, res, next) => {
   res.locals.success_message = req.flash('success_message');
@@ -89,49 +76,61 @@ var db = mongoose.connection;
 db.on('error', () => console.log("error while connecting"));
 db.once('open', () => console.log("connected to database"))
 
+//checking user authentication
 function checkAuth(req, res, next) {
-    if (req.isAuthenticated()) {
-        res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, post-check=0, pre-check=0');
-        next();
-    } else {
-        req.flash('error_messages', "Please Login to continue !");
-        res.redirect('/home');
-    }
+  if (req.isAuthenticated()) {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, post-check=0, pre-check=0');
+    next();
+  } else {
+    req.flash('error_messages', "Please Login to continue !");
+    res.redirect('/home');
+  }
 }
 
 
-
-
-
-app.get('/',checkAuth, (req, res) => {
+//index route
+app.get('/', checkAuth, (req, res) => {
   res.render('index.ejs', {
     user: req.user
   });
 })
-app.get('/home',(req,res)=>{
-  res.render('home.ejs',{
+
+//home route before user authentication
+app.get('/home', (req, res) => {
+  res.render('home.ejs', {
     user: req.user
   });
 })
 
-app.get('/room',checkAuth, (req, res) => {
+//redirecting to room route after succesful authentication
+app.get('/room', checkAuth, (req, res) => {
   res.redirect(`/${uuidV4()}`)
 })
 
+app.post('/userroom',(req, res) => {
+  hostId = req.body.txt;
+  res.redirect(`/${hostId}`)
+})
+
+//login page web route
 app.get('/login', (req, res) => {
   res.render('login.ejs');
 })
 
-app.get('/logout',(req,res)=>{
+//logout page web route
+app.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/home');
 })
 
+
+//register page web route
 app.get('/register', (req, res) => {
   res.render('register.ejs');
 })
 
-app.get('/:room',checkAuth, (req, res) => {
+// unique route generated using uuid
+app.get('/:room', checkAuth, (req, res) => {
   if (req.user) {
     res.render('room.ejs', {
       roomId: req.params.room,
@@ -141,8 +140,6 @@ app.get('/:room',checkAuth, (req, res) => {
     res.render('login.ejs')
   }
 })
-
-
 
 
 //Authentication Strategy
@@ -159,6 +156,7 @@ passport.use(new LocalStrategy({
         message: "User does not exist"
       });
     }
+    //encrypting password using hash function before storing in database
     bcrypt.compare(password, data.password, (err, match) => {
       if (err) return done(null, false);
       if (!match) return done(null, false, {
@@ -193,6 +191,7 @@ app.post('/login', (req, res, next) => {
 })
 
 
+//user registration authentication
 app.post('/register', (req, res) => {
   var {
     name,
@@ -214,6 +213,7 @@ app.post('/register', (req, res) => {
           'name': name
         });
       } else {
+        //encryption of password
         bcrypt.genSalt(10, (err, salt) => {
           if (err) throw err;
           bcrypt.hash(password, salt, (err, hash) => {
@@ -235,25 +235,61 @@ app.post('/register', (req, res) => {
   }
 })
 
+var connectedPeers = {};
 
+//getting users
+function getUserarray(arr) {
+  onlineUsers = [];
+  arr.forEach((onlineUser) => {
+    onlineUsers.push(Object.values(onlineUser)[0]);
+  });
+  return onlineUsers;
+}
+
+//extablishing socket connection
 io.on('connection', socket => {
-      socket.on('join-room', (roomId, userId) => {
-        console.log(roomId, userId);
-        console.log(userId + ' User connected ');
-        socket.join(roomId);
-        socket.to(roomId).emit('user-connected', userId);
-        // messages
-        socket.on('message', (message,user) => {
-          //send message to the same room
-          io.to(roomId).emit('createMessage', message,user)
+  socket.on('join-room', (roomId, userId, userName) => {
+    var connectedUser = {};
+    console.log(roomId, userId);
+    console.log(userId + ' User connected ');
+    //joining the room
+    socket.join(roomId);
 
-          socket.on('disconnect', () => {
-            socket.to(roomId).emit('user-disconnected', userId)
-          })
-        })
-      });
+    connectedUser[socket.id] = userName; //mapping userName with userId
+    if(connectedPeers[roomId]) connectedPeers[roomId].push(connectedUser);
+    else connectedPeers[roomId] = [connectedUser];
+
+    //broadcasting new peer connection to every room
+    socket.broadcast.to(roomId).emit('user-connected', userId,userName);
+
+
+
+
+    // messages
+    socket.on('message', (message, user) => {
+      //send message to the same room
+      io.to(roomId).emit('createMessage',message,user);
     });
 
-      server.listen(process.env.PORT || 3000, () => {
-        console.log("app now listening for requests on port 3000");
-      });
+
+    //Seninding all connected peers array
+    io.to(roomId).emit("connected-users", getUserarray(connectedPeers[roomId]));
+
+    //removing disconnected user from other peers streams
+    socket.on('disconnect', () => {
+      socket.broadcast.to(roomId).emit('user-disconnected', userId);
+      connectedPeers[roomId].forEach((user,index) => {
+        if (user[socket.id]) {
+          connectedPeers[roomId].splice(index, 1);
+        }
+        //Send online users array
+        io.to(roomId).emit("online-users", getUserarray(connectedPeers[roomId]));
+      })
+    })
+  });
+});
+
+//port
+server.listen(process.env.PORT || 3000, () => {
+  console.log("app now listening for requests on port 3000");
+});

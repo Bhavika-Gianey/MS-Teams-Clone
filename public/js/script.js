@@ -21,21 +21,21 @@ navigator.mediaDevices.getUserMedia({
     call.on('stream', userVideoStream => {
       addVideoStream(video, userVideoStream)
     })
-    // call.on('close',()=>{
-    //   video.remove()
-    // })
+    call.on('close',()=>{
+      video.remove()
+    })
   })
 
   socket.on('user-connected', userId => {
     connectToNewUser(userId, videoStream)
   })
 
+
+
+
   // input value
     $(document).ready(function(){
       var user = $("#user").text();
-      // alert(user);
-
-
       let text = $("input");
       $('html').keydown(function (e) {
         if (e.which == 13 && text.val().length !== 0) {
@@ -46,27 +46,12 @@ navigator.mediaDevices.getUserMedia({
         }
       });
 
-      socket.on("createMessage", message => {
-        $("ul").append(`<li class="message"><b>${user}<br/>${message}</li>`);
+      socket.on("createMessage", (message,name) => {
+        $("ul").append(`<li class="message"><b>${name}<br/>${message}</li>`);
         scrollToBottom()
       });
 
     })
-
-    // let name = {user};
-    // when press enter send message
-    // $('html').keydown(function (e) {
-    //   if (e.which == 13 && text.val().length !== 0) {
-    //     console.log(text.val());
-    //
-    //     socket.emit('message', text.val(),user);
-    //     text.val('')
-    //   }
-    // });
-    // socket.on("createMessage", message => {
-    //   $("ul").append(`<li class="message"><b>${user}<br/>${message}</li>`);
-    //   scrollToBottom()
-    // });
 })
 
 socket.on('user-disconnected',userId=>{
@@ -75,8 +60,17 @@ socket.on('user-disconnected',userId=>{
 
 
 myPeer.on('open', id => {
-  socket.emit('join-room', ROOM_ID, id)
+  socket.emit('join-room', ROOM_ID, id,user)
 })
+
+const participants = document.querySelector(".participants");
+//Display online users
+socket.on("connected-users", (data) => {
+  participants.innerHTML = "";
+  data.forEach((user) => {
+    participants.innerHTML += `<p>${user}</p>`;
+  });
+});
 
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
@@ -98,6 +92,98 @@ function addVideoStream(video, stream) {
   })
   videoGrid.append(video)
 }
+
+// const start = document.getElementById("shareScreen");
+// start.addEventListener("click",function(e){
+//   startCapture();
+// })
+
+//share shareScreen
+function startCapture(){
+ try{
+   navigator.mediaDevices.getDisplayMedia({
+     video: {
+       cursor: "always"
+     },
+     audio: {
+       echoCancellation: true,
+       noiseSuppression: true
+     }
+   }).then((stream)=> {
+       let videoTrack = stream.getVideoTracks()[0];
+       //save my screen stream
+       videoStream = stream;
+      broadcastNewTracks( stream, 'video');
+       myVideo.srcObject = stream;
+
+
+       // screen.getVideoTracks()[0].addEventListener( 'ended', () => {
+       //      stopSharingScreen();
+       //  } );
+   }).catch(err => {
+     console.log("unable to get display media" + err);
+   })
+
+ }catch(err){
+    console.log("shareerror" + err);
+ }
+
+
+ // navigator.mediaDevices
+ //    .getDisplayMedia({
+ //      video: { cursor: true },
+ //      audio: true,
+ //    })
+ //    .then((screenStream) => {
+ //      Object.values(peers).map((peer) => {
+ //        console.log(peer);
+ //        peer.peerConnection.getSenders().map((sender) => {
+ //          if (sender.track.kind == "video") {
+ //            console.log(sender.track.kind);
+ //            sender.replaceTrack(screenStream.getVideoTracks()[0]);
+ //          }
+ //        });
+ //      });
+ //      myVideo.srcObject = screenStream;
+ //      screenStream.getTracks()[0].onended = () => {
+ //        Object.values(peers).map((peer) => {
+ //          peer.peerConnection.getSenders().map((sender) => {
+ //            if (sender.track.kind == "video") {
+ //              sender.replaceTrack(videoStream.getVideoTracks()[0]);
+ //            }
+ //          });
+ //        });
+ //        myVideo.srcObject = videoStream;
+ //      };
+ //    });
+};
+
+function broadcastNewTracks( stream, type) {
+    // h.setLocalStream( stream, mirrorMode );
+
+    let track = type == 'audio' ? stream.getAudioTracks()[0] : stream.getVideoTracks()[0];
+
+    for ( let p in peers ) {
+        let pName = peers[p];
+        console.log(Object.values(peers));
+        console.log(pName);
+        console.log("first");
+        // console.log(typeof peers[pName]);
+        if ( typeof pName == 'object' ) {
+            console.log("second");
+            replaceTrack( track, pName);
+        }
+    }
+}
+
+function replaceTrack( stream, recipientPeer ) {
+    let sender = recipientPeer.getSenders ? recipientPeer.getSenders().find( s => s.track && s.track.kind === stream.kind ) : false;
+
+    sender ? sender.replaceTrack( stream ) : '';
+}
+
+
+
 
 
 
@@ -163,3 +249,33 @@ const setPlayVideo = () => {
   `
   document.querySelector('.main__video_button').innerHTML = html;
 }
+
+let chat_check = 0;
+let participant_check = 0;
+  const openChat = () => {
+    if(!chat_check){
+        document.getElementById("participants").style.display = "none";
+        document.getElementById("chat").style.display = "block";
+
+        chat_check = 1;
+        participant_check = 0;
+    }
+    else{
+      document.getElementById("chat").style.display = "none";
+      chat_check = 0;
+    }
+  }
+
+
+
+  const openPist = () => {
+    if (!participant_check) {
+      document.getElementById("chat").style.display = "none";
+      document.getElementById("participants").style.display = "block";
+      participant_check = 1;
+      chat_check = 0;
+    } else {
+      document.getElementById("participants").style.display = "none";
+      participant_check = 0;
+    }
+  }
