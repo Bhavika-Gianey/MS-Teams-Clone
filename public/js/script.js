@@ -24,10 +24,12 @@ navigator.mediaDevices.getUserMedia({
     call.on('close',()=>{
       video.remove()
     })
+    peers[userId] = call
   })
 
   socket.on('user-connected', userId => {
     connectToNewUser(userId, videoStream)
+
   })
 
 
@@ -113,7 +115,7 @@ function startCapture(){
        let videoTrack = stream.getVideoTracks()[0];
        //save my screen stream
        videoStream = stream;
-      broadcastNewTracks( stream, 'video');
+       broadcastNewTracks( stream, 'video');
        myVideo.srcObject = stream;
 
 

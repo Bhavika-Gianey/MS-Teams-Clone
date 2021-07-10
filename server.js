@@ -11,7 +11,7 @@ const {
 } = require('uuid'); //generates unique id for each room
 const passport = require('passport');
 const session = require('express-session');
-const users = require('./models.js');
+const users = require('./models/models.js');
 const flash = require('connect-flash');
 
 //Importing peerjs(webrtc framework for peer to peer connection)
@@ -34,6 +34,8 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: false
 }));
+
+
 //defining session secrets
 app.use(session({
   secret: 'secret',
@@ -41,6 +43,8 @@ app.use(session({
   resave: false,
   saveUninitialize: false
 }))
+
+//initialize passport
 app.use(passport.initialize()) //initialiazing passportjs
 app.use(passport.session()) //initializing passport sessions
 
@@ -283,7 +287,7 @@ io.on('connection', socket => {
           connectedPeers[roomId].splice(index, 1);
         }
         //Send online users array
-        io.to(roomId).emit("online-users", getUserarray(connectedPeers[roomId]));
+        io.to(roomId).emit("connected-users", getUserarray(connectedPeers[roomId]));
       })
     })
   });

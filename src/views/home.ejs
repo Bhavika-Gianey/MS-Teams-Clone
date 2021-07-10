@@ -19,7 +19,7 @@
       <a class="navbar-brand" href="#">
         <img src="/images/microsoft-terms-and-office (3).png" width="30" height="30" alt="">
       </a>
-      <div  id="navbarSupportedContent-7">
+      <div id="navbarSupportedContent-7">
         <div class="col-md-10">
 
         </div>
@@ -40,29 +40,6 @@
       </div>
     </div>
   </nav>
-
-  <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar w/ text</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Features</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Pricing</a>
-      </li>
-    </ul>
-    <span class="navbar-text">
-      Navbar text with an inline element
-    </span>
-  </div>
-</nav> -->
   <div class="view rgba-gradient d-flex justify-content-center align-items-center">
     <!-- <div class="rgba-gradient d-flex justify-content-center align-items-center"> -->
     <div class="container">
@@ -83,9 +60,9 @@
 
 
           <% if(user) { %>
-            <button type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
-              Join Meeting
-            </button>
+          <button type="button" class="btn btn-dark btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
+            Join Meeting
+          </button>
           <%
           }
           else{ %>
@@ -94,26 +71,35 @@
           %>
 
 
-          <!-- Modal -->
-          <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  ...
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+          <form action="/userroom" method="POST">
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Meeting ID</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+                  <div class="modal-body">
+                    <div class="form-group">
+
+                      <!-- <label for="txt" class="control-label" autofocus="autofocus">Text:</label> -->
+                      <input id="txt" name="txt" class="form-control" placeholder="Enter your meeting ID here..." />
+
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-dark btn-lg" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark btn-lg" id="save">Join</button>
+
+                  </div>
+
                 </div>
               </div>
             </div>
-          </div>
+          </form>
 
           <!-- <a class="btn  btn-dark btn-lg">Join Meeting</a> -->
         </div>
