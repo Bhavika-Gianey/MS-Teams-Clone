@@ -130,34 +130,6 @@ function startCapture(){
     console.log("shareerror" + err);
  }
 
-
- // navigator.mediaDevices
- //    .getDisplayMedia({
- //      video: { cursor: true },
- //      audio: true,
- //    })
- //    .then((screenStream) => {
- //      Object.values(peers).map((peer) => {
- //        console.log(peer);
- //        peer.peerConnection.getSenders().map((sender) => {
- //          if (sender.track.kind == "video") {
- //            console.log(sender.track.kind);
- //            sender.replaceTrack(screenStream.getVideoTracks()[0]);
- //          }
- //        });
- //      });
- //      myVideo.srcObject = screenStream;
- //      screenStream.getTracks()[0].onended = () => {
- //        Object.values(peers).map((peer) => {
- //          peer.peerConnection.getSenders().map((sender) => {
- //            if (sender.track.kind == "video") {
- //              sender.replaceTrack(videoStream.getVideoTracks()[0]);
- //            }
- //          });
- //        });
- //        myVideo.srcObject = videoStream;
- //      };
- //    });
 };
 
 function broadcastNewTracks( stream, type) {
