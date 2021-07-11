@@ -24,7 +24,7 @@ navigator.mediaDevices.getUserMedia({
     call.on('close',()=>{
       video.remove()
     })
-    peers[userId] = call
+    peers[call.peer] = call;
   })
 
   socket.on('user-connected', userId => {
@@ -94,13 +94,7 @@ function addVideoStream(video, stream) {
   })
   videoGrid.append(video)
 }
-
-// const start = document.getElementById("shareScreen");
-// start.addEventListener("click",function(e){
-//   startCapture();
-// })
-
-//share shareScreen
+var screen ='';
 function startCapture(){
  try{
    navigator.mediaDevices.getDisplayMedia({
@@ -114,14 +108,16 @@ function startCapture(){
    }).then((stream)=> {
        let videoTrack = stream.getVideoTracks()[0];
        //save my screen stream
-       videoStream = stream;
+       screen = stream;
        broadcastNewTracks( stream, 'video');
        myVideo.srcObject = stream;
 
 
-       // screen.getVideoTracks()[0].addEventListener( 'ended', () => {
-       //      stopSharingScreen();
-       //  } );
+       screen.getVideoTracks()[0].addEventListener( 'ended', () => {
+            console.log('ended');
+            stopSharingScreen();
+            myVideo.srcObject = videoStream;
+        } );
    }).catch(err => {
      console.log("unable to get display media" + err);
    })
@@ -132,17 +128,25 @@ function startCapture(){
 
 };
 
-function broadcastNewTracks( stream, type) {
-    // h.setLocalStream( stream, mirrorMode );
 
+function stopSharingScreen(){
+  return new Promise( ( res, rej ) => {
+          screen.getTracks().length ? screen.getTracks().forEach( track => track.stop() ) : '';
+
+              res();
+          } ).then( () => {
+              broadcastNewTracks( videoStream, 'video' );
+          } ).catch( ( e ) => {
+              console.error( e );
+          } );
+}
+
+function broadcastNewTracks( stream, type) {
     let track = type == 'audio' ? stream.getAudioTracks()[0] : stream.getVideoTracks()[0];
 
     for ( let p in peers ) {
         let pName = peers[p];
-        console.log(Object.values(peers));
-        console.log(pName);
-        console.log("first");
-        // console.log(typeof peers[pName]);
+        console.log("pName ",pName);
         if ( typeof pName == 'object' ) {
             console.log("second");
             replaceTrack( track, pName);
@@ -151,7 +155,7 @@ function broadcastNewTracks( stream, type) {
 }
 
 function replaceTrack( stream, recipientPeer ) {
-    let sender = recipientPeer.getSenders ? recipientPeer.getSenders().find( s => s.track && s.track.kind === stream.kind ) : false;
+    let sender = recipientPeer.peerConnection.getSenders ? recipientPeer.peerConnection.getSenders().find( s => s.track && s.track.kind === stream.kind ) : false;
 
     sender ? sender.replaceTrack( stream ) : '';
 }
