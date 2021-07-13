@@ -60,7 +60,7 @@ function videoCall() {
 
 
 socket.on('user-connected', (userId, userName) => {
-  $("ul").append(`<li class="message"><b>${userName} joined this room./b><br/></li>`)
+  $("ul").append(`<li class="message"><b>${userName} joined this room.</b><br/></li>`)
   console.log("user-connected but not in the video");
 
 });
