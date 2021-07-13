@@ -7,14 +7,13 @@ header,
   height: 100%;
 }
 
-
-.nav .nav-button{
+.nav .nav-button {
   float: right;
   padding-left: 38px;
 }
 
-
 @media (max-width: 740px) {
+
   html,
   body,
   header,
@@ -22,7 +21,9 @@ header,
     height: 1000px;
   }
 }
+
 @media (min-width: 800px) and (max-width: 850px) {
+
   html,
   body,
   header,
@@ -53,14 +54,12 @@ header,
   color: black !important;
 }
 
-
 h6 {
   line-height: 1.7;
 }
 
-
 .rgba-gradient {
-  background: -moz-linear-gradient(45deg, rgba(42, 27, 161, 0.3),rgba(42, 27, 161, 0.7) 100%);
+  background: -moz-linear-gradient(45deg, rgba(42, 27, 161, 0.3), rgba(42, 27, 161, 0.7) 100%);
   background: -webkit-linear-gradient(45deg, rgba(42, 27, 161, 0.3), rgba(42, 27, 161, 0.7) 100%);
   background: -webkit-gradient(linear, 45deg, from(rgba(42, 27, 161, 0.3)), to rgba(42, 27, 161, 1));
   background: -o-linear-gradient(45deg, rgba(42, 27, 161, 0.3), rgba(42, 27, 161, 0.7)100%);

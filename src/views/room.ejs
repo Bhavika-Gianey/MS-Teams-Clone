@@ -39,76 +39,85 @@
 
 <body>
   <div class="main">
-    <div class="main__left">
-      <div class="main__videos">
+    <div class="window__left">
+      <div class="window__videos">
         <div id="video-grid">
 
         </div>
       </div>
-      <div class="main__controls">
-        <div class="main__controls__block">
-          <div class="main__controls__button" data-container="body" data-toggle="popover" title="Copy the Url or share the password with your friends to join " data-placement="top" data-content="
+      <div class="window__controls">
+        <div class="window__controls__block">
+          <div class="window__controls__button" data-container="body" data-toggle="popover" title="Copy the Url or share the password with your friends to join " data-placement="top" data-content="
           Room Password: <%= roomId %>">
             <i class="fas fa-info-circle"></i>
             <span>Info</span>
           </div>
-
-          <div onclick="muteUnmute()" class="main__controls__button main__mute_button">
+          <div onclick="muteUnmute()" class="window__controls__button window__mute_button">
             <i class="fas fa-microphone"></i>
             <span>Mute</span>
           </div>
-          <div onclick="playStop()" class="main__controls__button main__video_button">
+          <div onclick="playStop()" class="window__controls__button window__video_button">
             <i class="fas fa-video"></i>
             <span>Stop Video</span>
           </div>
-          <div onclick="startCapture()" class="main__controls__button shareScreen">
+          <div onclick="startCapture()" class="window__controls__button shareScreen">
             <i class="fas fa-desktop"></i>
             <span>Share</span>
           </div>
-          <div onclick="openPist()" class="main__controls__button">
+          <div onclick="openPist()" class="window__controls__button">
             <i class="fas fa-user-friends"></i>
             <span>Participants</span>
           </div>
-          <div onclick="openChat()" class="main__controls__button ">
+          <div onclick="openChat()" class="window__controls__button ">
             <i class="fas fa-comment-alt"></i>
             <span>Chat</span>
           </div>
-          <a href='/'>
-            <div class="main__controls__block">
-              <div class="main__controls__button">
-                <i style="color:#7875B5" class="fas fa-phone-alt"></i>
-                <span class="leave_meeting"><b>Leave Meeting</b></span>
-              </div>
+          <div class="window__controls__block">
+            <div onclick="videoEnd()" class="window__controls__button">
+              <i style="color:#7875B5" class="fas fa-phone-alt"></i>
+              <span class="leave_meeting"><b>Leave Meeting</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="participants" class="window__right">
+      <div class="window__header">
+        <h6>Participants</h6>
+        <div class="participants">
+        </div>
+      </div>
+    </div>
+
+
+    <div id="chat" class="window__right">
+      <div class="row">
+        <div class="col-11">
+          <a href="/">
+            <div>
+              <button class="pull-right btn  btn-danger btn-sm">Leave Room</button>
             </div>
           </a>
         </div>
+        <div class="col-1">
+          <div class="pull-right hide" onclick="videoCall() ">
+            <button><i class="fas fa-video fa-sm" id="video_side"></i></button>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div id="chat" class="main__right">
-      <div class="main__header">
-        <!-- <h6>Chat</h6> -->
+
+      <div class="window__header">
         <h3 id="user"><%= user%></h3>
       </div>
-      <div class="main__chat_window">
+      <div class="window__chat_window">
         <ul class="messages">
 
         </ul>
-
       </div>
-      <div class="main__message_container">
+      <div class="window__message_container">
         <input id="chat_message" type="text" placeholder="Type message here...">
-      </div>
-    </div>
-
-
-    <div id="participants" class="main__right">
-      <div class="main__header">
-        <h6>Participants</h6>
-        <!-- <h3 id="user"><%= user%></h3> -->
-        <div class="participants">
-
-        </div>
       </div>
     </div>
 

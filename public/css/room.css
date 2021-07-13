@@ -3,13 +3,13 @@
   display: flex;
 }
 
-.main__left {
+.window__left {
   flex: 1;
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 
-.main__videos {
+.window__videos {
   flex-grow: 1;
   background-color: #CBC3E3;
   display: flex;
@@ -18,92 +18,82 @@
   padding: 30px;
 }
 
-.main__controls {
+.window__controls {
   background-color: black;
 }
 
-.main__right {
-  display: none;
-  background-color: white;
-  /* border-left: 1px solid #4C489D; */
-  border-radius: 35px;
-  overflow-y: auto;
-  overflow-x: scroll;
+#participants {
   flex: 0.2;
-  padding: 10px;
-  margin-right: 20px;
+  background-color: white;
 }
 
-.main__controls {
-  /* color: #D2D2D2; */
+.window__right {
+  overflow-y: auto;
+  overflow-x: scroll;
+  flex: 1;
+  padding: 10px;
+}
+
+.window__controls {
   color: #7875B5;
   display: flex;
   justify-content: center;
   padding: 5px;
 }
 
-.main__controls__block {
+.window__controls__block {
   display: flex;
 }
 
-.main__controls__button {
+.window__controls__button {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 8px 10px;
-  /* min-width: 80px; */
   cursor: pointer;
-  /* background-color: white;
-  margin: 7px;
-  border: none;
-  color: black;
-  border-radius: 50%;
-  text-align: center;
-  text-decoration: none;
-  font-size: 10px;
-  width: 45px;
-  height: 45px;
-  cursor: pointer; */
 }
 
-.main__controls__button:hover {
+.window__controls__button:hover {
   background-color: #4C489D;
   border-radius: 5px;
 }
 
-.main__controls__button i {
+.window__controls__button i {
   font-size: 24px;
 }
 
-.main__right {
-  display: none;
+.window__right {
+  height: 100vh;
+  display: flex;
+  flex=0.8;
+  background-color: #7875B5;
   flex-direction: column;
   overflow-y: auto;
 }
 
-.main__header {
+.window__header {
   padding-top: 5px;
-  color: rgb(107, 106, 106);
+  color: black;
   text-align: center;
 }
 
-.main__chat_window {
+.window__chat_window {
   flex-grow: 1;
   overflow-y: scroll;
 }
 
 .messages {
-  color: rgb(107, 106, 106);
+  color: white;
   list-style: none;
 }
 
-.main__message_container {
+.window__message_container {
   padding: 22px 12px;
   display: flex;
 }
 
-.main__message_container input {
+.window__message_container input {
   flex-grow: 1;
   border: none;
   outline: none;
@@ -120,7 +110,7 @@
 }
 
 @media only screen and (max-width: 650px) {
-  .main__left {
+  .window__left {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -128,10 +118,9 @@
     overflow-x: scroll;
   }
 
-  .main__right {
+  .window__right {
     display: none;
     background-color: white;
-    /* border-left: 1px solid #4C489D; */
     border-radius: 35px;
     overflow-y: auto;
     overflow-x: scroll;
@@ -140,8 +129,7 @@
     margin-right: 20px;
   }
 
-  .main__controls {
-    /* color: #D2D2D2; */
+  .window__controls {
     color: #7875B5;
     display: flex;
     justify-content: center;
@@ -149,8 +137,7 @@
     padding: 5px;
   }
 
-
-  .main__videos {
+  .window__videos {
     flex-grow: 1;
     background-color: #CBC3E3;
     display: flex;

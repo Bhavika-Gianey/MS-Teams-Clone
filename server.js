@@ -35,13 +35,14 @@ app.use(express.urlencoded({
   extended: false
 }));
 
-
+// app.set('trust proxy', 1) // trust first proxy
 //defining session secrets
 app.use(session({
   secret: 'secret',
   maxAge: 3600000,
   resave: false,
-  saveUninitialize: false
+  saveUninitialize: false,
+  // cookie: { sameSite :'lax' }
 }))
 
 //initialize passport
@@ -111,7 +112,7 @@ app.get('/room', checkAuth, (req, res) => {
   res.redirect(`/${uuidV4()}`)
 })
 
-app.post('/userroom',(req, res) => {
+app.post('/userroom', (req, res) => {
   hostId = req.body.txt;
   res.redirect(`/${hostId}`)
 })
@@ -242,58 +243,65 @@ app.post('/register', (req, res) => {
 var connectedPeers = {};
 
 //getting users
-function getUserarray(arr) {
-  onlineUsers = [];
-  arr.forEach((onlineUser) => {
-    onlineUsers.push(Object.values(onlineUser)[0]);
+function peerArray(arr) {
+  conUsers = [];
+  arr.forEach((conUser) => {
+    conUsers.push(Object.values(conUser)[0]);
   });
-  return onlineUsers;
+  return conUsers;
 }
 
 //extablishing socket connection
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId, userName) => {
     var connectedUser = {};
-    console.log(roomId, userId);
-    console.log(userId + ' User connected ');
     //joining the room
     socket.join(roomId);
 
     connectedUser[socket.id] = userName; //mapping userName with userId
-    if(connectedPeers[roomId]) connectedPeers[roomId].push(connectedUser);
+    if (connectedPeers[roomId]) connectedPeers[roomId].push(connectedUser);
     else connectedPeers[roomId] = [connectedUser];
 
     //broadcasting new peer connection to every room
-    socket.broadcast.to(roomId).emit('user-connected', userId,userName);
+    socket.to(roomId).emit('user-connected', userId, userName);
 
-
+    socket.on('joined-video', (roomId, userId, userName) => {
+      // console.log("ew");
+      socket.to(roomId).emit('video-connected', userId, userName);
+    })
 
 
     // messages
     socket.on('message', (message, user) => {
       //send message to the same room
-      io.to(roomId).emit('createMessage',message,user);
+      io.to(roomId).emit('createMessage', message, user);
     });
 
 
     //Seninding all connected peers array
-    io.to(roomId).emit("connected-users", getUserarray(connectedPeers[roomId]));
+    io.to(roomId).emit("connected-users", peerArray(connectedPeers[roomId]));
+
+    socket.on("videoDisconnected", (roomId, userId, userName) => {
+      console.log("left");
+      io.to(roomId).emit('user-left-video', userId, userName);
+    });
 
     //removing disconnected user from other peers streams
     socket.on('disconnect', () => {
       socket.broadcast.to(roomId).emit('user-disconnected', userId);
-      connectedPeers[roomId].forEach((user,index) => {
+      connectedPeers[roomId].forEach((user, index) => {
         if (user[socket.id]) {
           connectedPeers[roomId].splice(index, 1);
         }
         //Send online users array
-        io.to(roomId).emit("connected-users", getUserarray(connectedPeers[roomId]));
+        io.to(roomId).emit("connected-users", peerArray(connectedPeers[roomId]));
       })
     })
   });
 });
 
 //port
-server.listen(process.env.PORT || 3000, () => {
+server.listen(process.env.PORT || 3000,
+() => {
   console.log("app now listening for requests on port 3000");
 });
